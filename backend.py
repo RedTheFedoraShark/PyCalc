@@ -1,4 +1,5 @@
 from collections import deque
+import operator
 
 o_priority = {
     # operator priority
@@ -13,6 +14,14 @@ o_priority = {
 
 }
 
+operators = {
+    '+': operator.add,
+    '-': operator.sub,
+    '*': operator.mul,
+    '/': operator.truediv,
+    '%': operator.mod,
+    '^': operator.pow
+}
 
 def rpn(string):
     """
@@ -62,6 +71,8 @@ def rpn(string):
             """ There will be handler for functions here later """
             pass
 
+    if number: rpn_queue.append(current_number)
+
     while operator_stack:  # empty the operator stack!
         rpn_queue.append(operator_stack[-1])
         operator_stack.pop()
@@ -69,4 +80,38 @@ def rpn(string):
     return rpn_queue
 
 
-print(rpn('12+1*(2*3+4/5)'))
+
+
+def calculate(rpn_queue):
+    """
+    :param rpn_queue: queue containing phrase in reverse polish notation
+    :return: float containing the calc result
+    """
+    if rpn_queue == None:
+        return None
+
+    number_stack = deque()
+    operator_stack = deque()
+    while rpn_queue:
+        if rpn_queue[0] in '-+*/^%':
+            if len(number_stack) > 1:
+                number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
+                number_stack.pop()
+            else: 
+                operator_stack.append(rpn_queue[0])
+        else:
+            number_stack.append(float(rpn_queue[0]))
+        
+        rpn_queue.popleft()
+
+    while operator_stack:
+        if len(number_stack) > 1:
+            number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
+            number_stack.pop()
+        elif len(operator_stack) > 0:
+            print(number_stack)
+            print(operator_stack)
+            return None
+
+    return number_stack[0]
+
