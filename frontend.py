@@ -6,8 +6,7 @@ lastinput=""
 result=""
 
 def check_symbol(symbol):
-        if symbol in ("+", "-", "*", "/", str(sqrt_symbol), "^"):
-            print("wykonanie checku")
+        if symbol in ("+", "-", "*", "/", f"{sqrt_symbol}", "^"):
             return True
         else:
             return False
@@ -17,9 +16,6 @@ def show(symbol): #wyswietlanie wprowadzanych danych
     global lastinput
     if check_symbol(symbol) and check_symbol(lastinput):
         result=result[:-1]
-        print("usunięcie poprzedniego")
-    else:
-        print("nie wykonalem funkcji")
     lastinput=symbol
     result+=str(symbol)
     textfield.delete(1.0,"end")
