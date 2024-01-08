@@ -28,21 +28,34 @@ def rpn(string):
     :param string: string containing the phrase to be converted to Reverse Polish Notation.
     :return: queue containing the phrase in reverse RPN. Returns None if an error is encountered.
     """
-    print('s')
+    # print('s')
     rpn_queue = deque()
     operator_stack = deque()
     current_number = ''
     number = False
+    sqrt = False
+    big = False
     for c in string:
         if c in '0123456789.':
             number = True; current_number += c  # append number and continue
 
-        elif c in '+-*/^%()':
-            if number: rpn_queue.append(current_number); current_number = ''; number = False  # queue up number and reset
+        elif c in '+-*/^%()\u221A':
+            if number: 
+                rpn_queue.append(current_number); current_number = ''; number = False  # queue up number and reset
+                if sqrt and not big:
+                    rpn_queue.append('1')
+                    rpn_queue.append('2')
+                    rpn_queue.append('/')
+                    rpn_queue.append('^')
+                    operator_stack.pop()
+                    sqrt = False
+                    big = False
+
 
             match c:
                 case '(':
                     operator_stack.append(c)
+                    if sqrt: big = True
 
                 case ')':
                     for i in range(len(operator_stack)-1, -1, -1):
@@ -52,7 +65,19 @@ def rpn(string):
                             operator_stack.pop()  # move operator from stack to queue
                         else:
                             operator_stack.pop()
+                            if i-1 > 0 and sqrt and big:
+                                rpn_queue.append('1')
+                                rpn_queue.append('2')
+                                rpn_queue.append('/')
+                                rpn_queue.append('^')
+                                operator_stack.pop()
+                                sqrt = False
+                                big = False
                             break
+
+                case '\u221A':
+                    sqrt = True
+                    operator_stack.append(c)
 
                 case _:
                     _continue = True
@@ -74,7 +99,8 @@ def rpn(string):
     if number: rpn_queue.append(current_number)
 
     while operator_stack:  # empty the operator stack!
-        rpn_queue.append(operator_stack[-1])
+        if operator_stack[-1] != '\u221A': rpn_queue.append(operator_stack[-1])
+        else: rpn_queue.append('1'); rpn_queue.append('2'); rpn_queue.append('/'); rpn_queue.append('^')
         operator_stack.pop()
 
     return rpn_queue
@@ -95,8 +121,11 @@ def calculate(rpn_queue):
     while rpn_queue:
         if rpn_queue[0] in '-+*/^%':
             if len(number_stack) > 1:
-                number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
-                number_stack.pop()
+                try:
+                    number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
+                    number_stack.pop()
+                except ZeroDivisionError:
+                    return "Div0!"
             else: 
                 operator_stack.append(rpn_queue[0])
         else:
@@ -106,8 +135,11 @@ def calculate(rpn_queue):
 
     while operator_stack:
         if len(number_stack) > 1:
-            number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
-            number_stack.pop()
+            try:
+                number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
+                number_stack.pop()
+            except ZeroDivisionError:
+                return "Div0!"
         elif len(operator_stack) > 0:
             print(number_stack)
             print(operator_stack)
@@ -115,3 +147,5 @@ def calculate(rpn_queue):
 
     return number_stack[0]
 
+def magic(st):
+    return str(calculate(rpn(st)))
