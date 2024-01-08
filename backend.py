@@ -146,3 +146,6 @@ def calculate(rpn_queue):
             return None
 
     return number_stack[0]
+
+def magic(st):
+    return str(calculate(rpn(st)))
