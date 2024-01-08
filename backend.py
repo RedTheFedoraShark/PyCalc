@@ -95,8 +95,11 @@ def calculate(rpn_queue):
     while rpn_queue:
         if rpn_queue[0] in '-+*/^%':
             if len(number_stack) > 1:
-                number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
-                number_stack.pop()
+                try:
+                    number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
+                    number_stack.pop()
+                except ZeroDivisionError:
+                    return "Div0!"
             else: 
                 operator_stack.append(rpn_queue[0])
         else:
@@ -106,8 +109,11 @@ def calculate(rpn_queue):
 
     while operator_stack:
         if len(number_stack) > 1:
-            number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
-            number_stack.pop()
+            try:
+                number_stack[-2] = operators[rpn_queue[0]](number_stack[-2], number_stack[-1])
+                number_stack.pop()
+            except ZeroDivisionError:
+                return "Div0!"
         elif len(operator_stack) > 0:
             print(number_stack)
             print(operator_stack)
@@ -115,3 +121,4 @@ def calculate(rpn_queue):
 
     return number_stack[0]
 
+print(calculate(rpn('((2+7)/3+(14-3*4))/2/0')))
