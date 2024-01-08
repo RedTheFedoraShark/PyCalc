@@ -28,7 +28,7 @@ def rpn(string):
     :param string: string containing the phrase to be converted to Reverse Polish Notation.
     :return: queue containing the phrase in reverse RPN. Returns None if an error is encountered.
     """
-    print('s')
+    # print('s')
     rpn_queue = deque()
     operator_stack = deque()
     current_number = ''
@@ -146,8 +146,3 @@ def calculate(rpn_queue):
             return None
 
     return number_stack[0]
-
-print(calculate(rpn('((2+7)/3+(14-3*4))/2/0')))
-print("\u221A")
-print(rpn('\u221A2'))
-print(calculate(rpn('\u221A(2+2)')))
