@@ -1,5 +1,5 @@
 import tkinter as tk
-
+import backend
 sqrt_symbol = "\u221A"#import symbolu pierwiastka
 
 lastinput=""
@@ -27,10 +27,10 @@ def clear_field(): # czyszczenie okna
     result=""
     
 def calculate(): # wyswietlanie wyniku
-    endresult="here daj wynik"
+    global result
+    endresult=backend.magic(result)
     textfield.delete(1.0,"end")
     textfield.insert(1.0,endresult)
-    global result
     result =endresult
     
 def enter(event): # enter wywoluje funkcje wyzej
