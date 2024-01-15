@@ -10,8 +10,9 @@ def check_symbol(symbol):
             return True
         else:
             return False
-def show(symbol): #wyswietlanie wprowadzanych danych
 
+
+def show(symbol): #wyswietlanie wprowadzanych danych
     global result
     global lastinput
     if check_symbol(symbol) and check_symbol(lastinput):
@@ -28,14 +29,24 @@ def clear_field(): # czyszczenie okna
     
 def calculate(): # wyswietlanie wyniku
     global result
+    result = textfield.get("1.0", "end")
     endresult=backend.magic(result)
     textfield.delete(1.0,"end")
     textfield.insert(1.0,endresult)
     result =endresult
-    
+
+
 def enter(event): # enter wywoluje funkcje wyzej
     if event.keysym == "Return":
         calculate()
+
+
+def backspace(event):
+    global result
+    trimmed = textfield.get(1.0, "end-2c")
+    textfield.delete(1.0, "end")
+    textfield.insert(1.0, trimmed)
+    result = trimmed
 
 window=tk.Tk()                                                  #utworzenie okna
 window.geometry("625x410")
@@ -44,6 +55,7 @@ textfield=tk.Text(window,height=2,width=27,font=("Arial",30),bg="lavenderblush1"
 textfield.grid(columnspan=6)
 
 window.bind("<Return>", enter) # powiązanie entera z wywołaniem funkcji
+window.bind("<BackSpace>", backspace)
 
 button_1=tk.Button(window,text="1",command=lambda: show(1),width=5,font=("Arial",30),bg='lavenderblush2')
 button_1.grid(row=2,column=1)

@@ -28,7 +28,6 @@ def rpn(string):
     :param string: string containing the phrase to be converted to Reverse Polish Notation.
     :return: queue containing the phrase in reverse RPN. Returns None if an error is encountered.
     """
-    # print('s')
     rpn_queue = deque()
     operator_stack = deque()
     current_number = ''
@@ -149,3 +148,6 @@ def calculate(rpn_queue):
 
 def magic(st):
     return str(calculate(rpn(st)))
+
+# print(rpn('20.9+19.1'))
+# print(calculate(rpn('20.9+19.1')))
