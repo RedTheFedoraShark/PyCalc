@@ -1,23 +1,36 @@
 import tkinter as tk
-import backend
 
 sqrt_symbol = "\u221A"#import symbolu pierwiastka
 
+lastinput=""
 result=""
+
+def check_symbol(symbol):
+        if symbol in ("+", "-", "*", "/", f"{sqrt_symbol}", "^"):
+            return True
+        else:
+            return False
 def show(symbol): #wyswietlanie wprowadzanych danych
+
     global result
+    global lastinput
+    if check_symbol(symbol) and check_symbol(lastinput):
+        result=result[:-1]
+    lastinput=symbol
     result+=str(symbol)
     textfield.delete(1.0,"end")
     textfield.insert(1.0,result)
     
 def clear_field(): # czyszczenie okna
+    global result
     textfield.delete(1.0,"end")
+    result=""
     
 def calculate(): # wyswietlanie wyniku
-    global result
-    endresult=backend.magic(result)
+    endresult="here daj wynik"
     textfield.delete(1.0,"end")
     textfield.insert(1.0,endresult)
+    global result
     result =endresult
     
 def enter(event): # enter wywoluje funkcje wyzej
@@ -72,4 +85,5 @@ button_bracket_left=tk.Button(window,text="(",command=lambda: show("("),width=5,
 button_bracket_left.grid(row=5,column=3)
 button_bracket_right=tk.Button(window,text=")",command=lambda: show(")"),width=5,font=("Arial",30),bg='lavenderblush2')
 button_bracket_right.grid(row=5,column=4)
+
 window.mainloop()
